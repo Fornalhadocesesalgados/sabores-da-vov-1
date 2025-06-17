@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fornalha - Doces e Salgados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chau+Philomene+One&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Quicksand', sans-serif;
+      color: #000000;
+      background-color: #fdf9f6;
+      padding-top: 80px; /* Espaço para garantir que o conteúdo não fique escondido sob o nav fixo */
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Chau Philomene One', sans-serif;
+      color: #b74139;
+    }
+    .important-text {
+      color: #b74139;
+      font-family: 'Chau Philomene One', sans-serif;
+    }
+    section {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+    .bg-soft-brown {
+      background-color: #f0e6dd;
+    }
+
+    /* Fixando o contêiner do título e navegação no topo */
+    .fixed-nav-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #fdf9f6;
+      z-index: 1000; /* Garante que fique acima de outros conteúdos */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 1rem 0;
+    }
+
+    /* Para garantir que o conteúdo abaixo não fique escondido pelo nav fixo */
+    body 
+    {
+      padding-top: 80px; /* Espaço para o cabeçalho fixo */
+    }
+
+    /* Carrossel de produtos */
+    .carousel-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      max-width: 1200px;
+    }
+    .carousel 
+    {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .carousel img 
+    {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    /* Botões flutuantes */
+    .floating-buttons 
+    {
+      position: fixed;
+      bottom: 5rem;
+      right: 5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 50;
+    }
+
+    .floating-buttons a 
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 50%;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .whatsapp 
+    {
+      background-color: #25D366;
+    }
+
+    .instagram 
+    {
+      background-color: #E1306C;
+    }
+
+    .discounts 
+    {
+      background-color: #FFC107;
+    }
+
+    .discounts-box 
+    {
+      position: absolute;
+      bottom: 4rem;
+      right: 0;
+      width: 16rem;
+      background-color: white;
+      padding: 1rem;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+    }
+
+    .discounts-box ul
+     {
+      list-style: none;
+      padding-left: 0;
+      font-size: 14px;
+    }
+
+    .discounts-box ul li 
+    {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body class="bg-neutral-100">
+  
+  <!-- Barra de navegação fixa (contêiner do título e nav) -->
+  <header class="fixed-nav-container">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
+      <h1 class="text-4xl font-bold text-[#b74139]">Fornalha</h1>
+      <nav class="mt-4 md:mt-0">
+        <a href="#sobre" class="text-[#b74139] font-semibold mx-2 hover:underline">Sobre</a>
+        <a href="#cardapio" class="text-[#b74139] font-semibold mx-2 hover:underline">Cardápio</a>
+        <a href="#contato" class="text-[#b74139] font-semibold mx-2 hover:underline">Contato</a>
+        
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="py-12">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-semibold mb-4">Sabor que aquece o coração</h2>
+      <p class="mb-6 text-lg">Conheça nossos doces irresistíveis e salgados crocantes</p>
+      <a href="#cardapio" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full">Ver Cardápio</a>
+    </div>
+  </section>
+
+ <section class="py-12">
+  <div class="container mx-auto">
+    <h2 class="text-2xl font-bold mb-6 text-center">Nossos Produtos</h2>
+    <div x-data="carousel()" x-init="init()" class="carousel-container relative max-w-4xl mx-auto overflow-hidden">
+      <!-- Botões de navegação -->
+      <button @click="prev()" 
+        class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 z-10">
+        &#8592;
+      </button>
+      <button @click="next()" 
+        class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 z-10">
+        &#8594;
+      </button>
+
+      <!-- Slides -->
+      <div class="flex transition-transform duration-500 ease-in-out"
+           :style="`transform: translateX(-${currentIndex * (100/visibleCount)}%)`"
+           style="width: calc(100% * totalGroups)">
+        
+        <!-- Cada card tem largura proporcional para caber 2 ao mesmo tempo -->
+        <template x-for="(product, index) in products" :key="index">
+          <div class="p-4" :style="`width: calc(100% / ${visibleCount})`">
+            <div class="bg-white rounded-lg shadow p-4 text-center">
+              <img :src="product.img" :alt="product.name" class="h-40 mx-auto mb-2 object-cover rounded" />
+              <p class="font-semibold text-lg text-[#b74139]" x-text="product.name"></p>
+              <p class="text-black font-bold" x-text="product.price"></p>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function carousel() {
+    return {
+      currentIndex: 0,
+      visibleCount: 2, // Quantas imagens mostrar ao mesmo tempo
+      products: [
+        { name: 'Produto 1', price: 'R$ 10,00', img: 'img1.jpg' },
+        { name: 'Produto 2', price: 'R$ 15,00', img: 'img2.jpg' },
+        { name: 'Produto 3', price: 'R$ 12,00', img: 'img3.jpg' },
+        { name: 'Produto 4', price: 'R$ 18,00', img: 'img4.jpg' },
+        { name: 'Produto 5', price: 'R$ 20,00', img: 'img5.jpg' },
+      ],
+      get totalGroups() {
+        return Math.ceil(this.products.length / this.visibleCount);
+      },
+      init() {
+        this.interval = setInterval(() => {
+          this.next();
+        }, 5000);
+      },
+      next() {
+        this.currentIndex = (this.currentIndex + 1) % this.totalGroups;
+      },
+      prev() {
+        this.currentIndex = (this.currentIndex - 1 + this.totalGroups) % this.totalGroups;
+      }
+    }
+  }
+</script>
+
+      <!-- Slides -->
+      <div class="flex transition-transform duration-500 ease-in-out"
+           :style="`transform: translateX(-${currentIndex * (100/visibleCount)}%)`"
+           style="width: calc(100% * totalGroups)">
+        
+        <!-- Cada card tem largura proporcional para caber 2 ao mesmo tempo -->
+        <template x-for="(product, index) in products" :key="index">
+          <div class="min-w-1/2 p-4" style="width: calc(100% / 2)">
+            <div class="bg-white rounded-lg shadow p-4 text-center">
+              <img :src="product.img" :alt="product.name" class="h-40 mx-auto mb-2 object-cover rounded" />
+              <p class="font-semibold text-lg text-[#b74139]" x-text="product.name"></p>
+              <p class="text-black font-bold" x-text="product.price"></p>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function carousel() {
+    return {
+      currentIndex: 0,
+      visibleCount: 2, // Quantas imagens mostrar ao mesmo tempo
+      products: [
+        { name: 'Produto 1', price: 'R$ 10,00', img: 'img1.jpg' },
+        { name: 'Produto 2', price: 'R$ 15,00', img: 'img2.jpg' },
+        { name: 'Produto 3', price: 'R$ 12,00', img: 'img3.jpg' },
+        { name: 'Produto 4', price: 'R$ 18,00', img: 'img4.jpg' },
+        { name: 'Produto 5', price: 'R$ 20,00', img: 'img5.jpg' },
+      ],
+      get totalGroups() {
+        // Total de grupos de 2 imagens (exemplo: 5 imagens, grupos de 2 → ceil(5/2) = 3)
+        return Math.ceil(this.products.length / this.visibleCount);
+      },
+      init() {
+        // Slide automático troca a cada 5 segundos
+        this.interval = setInterval(() => {
+          this.next();
+        }, 5000);
+      },
+      next() {
+        this.currentIndex = (this.currentIndex + 1) % this.totalGroups;
+      },
+      prev() {
+        this.currentIndex = (this.currentIndex - 1 + this.totalGroups) % this.totalGroups;
+      }
+    }
+  }
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pratos Especiais -->
+  <section class="py-12 bg-soft-brown">
+    <div class="container mx-auto">
+      <h2 class="text-2xl font-bold mb-8 text-center">Pratos Especiais da Casa</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+          <img src="f:\1A-MODULAR\Lucas e nicolas 1modulards\Projeto final\escondidinho-com-carne-seca.jpg" alt="Prato Especial 1" class="h-48 mx-auto mb-4 object-cover rounded">
+          <h3 class="text-xl font-semibold mb-2">Escondidinho de Carne Seca</h3>
+          <p class="text-black">Uma combinação perfeita de carne seca desfiada com purê cremoso de mandioca.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+          <img src="f:\1A-MODULAR\Lucas e nicolas 1modulards\Projeto final\torta-de-frang-1400-x-62x5.png" alt="Prato Especial 2" class="h-48 mx-auto mb-4 object-cover rounded">
+          <h3 class="text-xl font-semibold mb-2">Torta Cremosa de Frango</h3>
+          <p class="text-black">Recheio suculento de frango desfiado com massa leve e cobertura gratinada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+  <!-- Cardápio -->
+
+  <section id="cardapio" class="py-12">
+    <div class="container mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-8">Nosso Cardápio</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-xl font-semibold mb-2">Coxinha</h3>
+          <p class="text-black">Crocante por fora, cremosa por dentro.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-xl font-semibold mb-2">Brigadeiro</h3>
+          <p class="text-black">Tradicional e sempre irresistível.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-xl font-semibold mb-2">Empada</h3>
+          <p class="text-black">Recheada com frango ou palmito, massa que derrete na boca.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-xl font-semibold mb-2">Bolo de Chocolate</h3>
+          <p class="text-black">Fofinho, molhadinho e com cobertura cremosa de chocolate.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-xl font-semibold mb-2">Salgado de Carne Moída</h3>
+          <p class="text-black">Recheio caseiro bem temperado, envolto em massa crocante.</p>
+        </div>
+
+        <!-- Doce de Leite -->
+
+        <div class="bg-white rounded-lg shadow p-4">
+          <h3 class="text-xl font-semibold mb-2">Doce de Leite</h3>
+          <p class="text-black">Doce e cremoso, com o sabor tradicional do doce de leite caseiro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!--sobre nós-->
+<section id="sobre" class="bg-[#ffe5d4] py-12 px-4 text-center">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-bold text-[#b74139] mb-6">Sobre Nós</h2>
+    <p class="text-gray-800 text-lg leading-relaxed">
+      A <span class="font-semibold text-[#b74139]">Fornalha - Doces e Salgados</span> nasceu do desejo de aquecer corações com sabores únicos e feitos com carinho. 
+      Desde 2020, nos dedicamos a oferecer produtos artesanais, fresquinhos e cheios de amor em cada detalhe.
+    </p>
+    <p class="text-gray-800 text-lg mt-4 leading-relaxed">
+      Nosso compromisso é levar até você o melhor dos doces e salgados: seja para o seu café da tarde, festa ou aquele momento especial. 
+      Valorizamos ingredientes de qualidade, atendimento atencioso e uma experiência que vai além do sabor.
+    </p>
+    <p class="text-[#b74139] font-medium text-base mt-6 italic">
+      "Não é só comida. É cuidado em forma de sabor."
+    </p>
+  </div>
+</section>
+
+  <!-- Contato -->
+  <section id="contato" class="py-12">
+    <div class="container mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Encomendas? Entre em Contato</h2>
+      <p class="mb-4 text-black">Fale conosco pelo WhatsApp: <a href="https://wa.me/5511975173885?text=Ol%C3%A1%2C+gostaria+de+fazer+um+pedido+na+Fornalha!" target="_blank" class="text-red-600 font-semibold underline">(11) 97517-3885</a></p>
+      <p class="mb-4 text-black">Ou nos siga no Instagram: <a href="https://instagram.com/fornalhasalgados.doces" target="_blank" class="text-red-600 font-semibold underline">@fornalhasalgados.doces</a></p>
+      <p class="mb-4 text-black">Nos visite na Rua Guaipá, 678 - Centro</p>
+      <form class="max-w-xl mx-auto text-left">
+        <input type="text" placeholder="Seu nome" class="w-full mb-3 p-2 border rounded text-black">
+        <input type="email" placeholder="Seu e-mail" class="w-full mb-3 p-2 border rounded text-black">
+        <textarea placeholder="Mensagem" class="w-full mb-3 p-2 border rounded text-black"></textarea>
+        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded">Enviar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Botões Flutuantes -->
+  <div class="fixed bottom-5 right-5 flex flex-col items-end space-y-2 z-50">
+    <!-- WhatsApp -->
+    <a href="https://wa.me/5511975173885?text=Ol%C3%A1%2C+gostaria+de+fazer+um+pedido+na+Fornalha!" target="_blank" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 20l1.39-4.45A9 9 0 1112 21a9 9 0 01-6.61-2.94L3 20z" />
+      </svg>
+    </a>
+    <!-- Instagram -->
+    <a href="https://instagram.com/fornalhasalgados.doces" target="_blank" class="bg-pink-500 hover:bg-pink-600 text-white p-4 rounded-full shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 2C4.238 2 2 4.238 2 7v10c0 2.762 2.238 5 5 5h10c2.762 0 5-2.238 5-5V7c0-2.762-2.238-5-5-5H7z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    </a>
+    <!-- Descontos -->
+    <div x-data="{ open: false }" class="relative">
+      <button @click="open = !open" class="bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-full shadow-lg">
+        %
+      </button>
+     <div x-show="open" @click.away="open = false" class="absolute bottom-14 right-0 w-64 bg-white text-black rounded shadow-lg p-4">
+  <h4 class="font-bold mb-2 text-[#b74139]">Descontos do Dia</h4>
+  <ul>
+    <li>🧁 10% off em doces</li>
+    <li>🥐 Combo 3 salgados + refri por R$12</li>
+    <li>🎂 Bolo com entrega grátis!</li>
+  </ul>
+</div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer class="bg-red-600 text-white py-6 text-center">
+    <p>&copy; 2025 Fornalha. Todos os direitos reservados.</p>
+    <div class="mt-2">
+      <a href="https://instagram.com/fornalhasalgados.doces" target="_blank" class="mx-2 hover:underline">Instagram</a>
+      <a href="#" class="mx-2 hover:underline"></a>
+    </div>
+  </footer>
+</body>
+</html>
